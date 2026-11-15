@@ -94,6 +94,84 @@ Se folosesc cu orice prefix Tailwind: `bg-sakura`, `text-momiji-ink`, `border-li
 
 `text-body` (16/25.6), `text-body-lg` (17/27.2), `text-caption` (13), `text-label` (12, spațiere 1.92), `text-h3` (28), `text-h2` (44), `text-h1` (56). Colțurile cardurilor: `rounded-card` (28px).
 
+## Pornire în simulator
+
+```bash
+npm install          # doar prima dată sau după ce se schimbă pachetele
+npx expo start -c    # -c golește cache-ul (necesar după schimbări la Tailwind)
+```
+
+În terminal, după ce apare codul QR:
+
+| Tastă | Ce face |
+| --- | --- |
+| `i` | deschide simulatorul iOS |
+| `a` | deschide emulatorul Android |
+| `r` | reîncarcă aplicația |
+| `j` | deschide debugger-ul |
+
+Varianta scurtă: `npm run ios`.
+
+În simulator, **Cmd + Ctrl + Z** deschide meniul de dezvoltare, unde poți apăsa **Reload**. Pe telefon, scanezi codul QR cu camera (ai nevoie de Expo Go).
+
+## Splash screen
+
+Splash-ul animat e în `src/components/readar-splash.tsx` și repetă preloader-ul de pe readar-site: fundal indigo, petalele care se rotesc și apar pe rând, colțul de pagină care se îndoaie, „Readar”, リーダー și bara „Se pregătește raftul tău”. Se afișează din `src/app/_layout.tsx`, după ce se încarcă fonturile.
+
+Ca să-l revezi, reîncarcă aplicația (`r` în terminal). În Expo Go apare întâi o clipă ecranul Expo Go. În aplicația finală, ecranul indigo din `app.json` apare direct.
+
+Momentele animației (în milisecunde) sunt în `useEffect`, în `readar-splash.tsx`:
+
+```ts
+turn.value = withTiming(0, { duration: 1300, easing: turnEase });          // rotirea petalelor
+fold.value = withDelay(1150, withTiming(1, { duration: 450 }));           // colțul îndoit
+wordmark.value = withDelay(1350, withTiming(1, { duration: 600 }));       // „Readar”
+fill.value = withDelay(1650, withTiming(1, { duration: 1450 }));          // bara de încărcare
+exit.value = withDelay(3100, withTiming(0, { duration: 900 }));           // dispariția
+```
+
+Ca să fie mai scurt, micșorează valorile din `withDelay` și `duration`. Dacă telefonul are „Reduce Motion” activat, splash-ul doar apare și dispare, fără animație.
+
+## Actualizări
+
+**Expo** (în proiect, nu global):
+
+```bash
+npx expo install expo@latest
+npx expo install --fix
+npx expo-doctor
+```
+
+**EAS CLI** (global, pentru build-uri):
+
+```bash
+npm install -g eas-cli@latest
+```
+
+**Simulatorul iOS**: actualizează Xcode din App Store, apoi descarcă cea mai nouă versiune de iOS din **Xcode → Settings → Components**, sau din terminal:
+
+```bash
+xcodebuild -downloadPlatform iOS
+```
+
+## Git
+
+Repo-ul e legat de GitHub (`paolaaabogatu/readar-app`, ramura `main`). `.gitignore` exclude `node_modules/`, `.expo/`, folderele native `ios/` și `android/`, setările WebStorm și fișierele `.env`.
+
+```bash
+git status                      # ce s-a schimbat
+git add -A                      # adaugă tot ce nu e ignorat
+git commit -m "mesajul tău"
+git push
+```
+
+Pentru o funcționalitate nouă, pornește o ramură nouă din `main`:
+
+```bash
+git checkout main && git pull
+git checkout -b nume-ramura
+```
+
 ## Get a fresh project
 
 When you're ready, run:
