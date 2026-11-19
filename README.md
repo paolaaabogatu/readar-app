@@ -114,6 +114,146 @@ Varianta scurtă: `npm run ios`.
 
 În simulator, **Cmd + Ctrl + Z** deschide meniul de dezvoltare, unde poți apăsa **Reload**. Pe telefon, scanezi codul QR cu camera (ai nevoie de Expo Go).
 
+### Alegerea simulatorului
+
+Expo pornește automat pe ultimul simulator folosit sau pe cel implicit, de exemplu „iPhone Duo”. Ca să alegi alt iPhone:
+
+```bash
+npm run ios:pick                              # îți arată lista și alegi cu săgețile
+npx expo run:ios --device "iPhone 17 Pro"     # direct, după nume
+```
+
+Altă variantă: deschide aplicația **Simulator**, alege iPhone-ul din **File → Open Simulator** și închide „iPhone Duo”. Expo folosește simulatorul care e deja pornit.
+
+### Build nativ (development build)
+
+```bash
+npm run ios:build      # = npx expo run:ios
+```
+
+Construiește aplicația cu Xcode și o instalează în simulator, cu iconul și splash-ul nativ Readar. Primul build durează câteva minute, următoarele sunt rapide.
+
+### Probleme frecvente la `npx expo run:ios`
+
+Log-ul complet al ultimului build e în `.expo/xcodebuild.log`.
+
+| Eroare | Cauză | Soluție |
+| --- | --- | --- |
+| `xcodebuild exited with error code 65` și `unknown warning group` sau `risks causing data races` în `ExpoModulesJSI` | Xcode e prea vechi pentru Expo SDK 58 (cere Xcode 26.4+) | Actualizează Xcode din App Store |
+| `You have not agreed to the Xcode license agreements` | Licența noului Xcode nu e acceptată | `sudo xcodebuild -license accept` |
+| `xcrun is not configured correctly` sau `Unable to run simctl` | Xcode nu e setat ca implicit sau nu și-a instalat componentele | `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` și `sudo xcodebuild -runFirstLaunch` |
+| Simulatorul nu pornește | Lipsește simulatorul iOS pentru noul Xcode | `xcodebuild -downloadPlatform iOS` sau **Xcode → Settings → Components** |
+| `pod install` eșuează | Pod-urile nu mai corespund cu pachetele | `cd ios && pod install --repo-update && cd ..` |
+
+După un update de Xcode, rulează pe rând:
+
+```bash
+sudo xcodebuild -license accept
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -runFirstLaunch
+xcodebuild -downloadPlatform iOS
+rm -rf node_modules/expo-modules-jsi/apple/.DerivedData
+npx expo prebuild --clean
+npx expo run:ios
+```
+
+Folderul `ios/` se poate regenera oricând cu `npx expo prebuild --clean`; e în `.gitignore`.
+
+## Android
+
+### Emulator pe Mac
+
+O singură dată:
+
+1. Instalează **Android Studio** (developer.android.com/studio, varianta pentru Mac cu cip Apple), cu setările implicite.
+2. **More Actions → Virtual Device Manager → Create Device**: alege de exemplu Pixel 9 și cea mai nouă imagine de sistem **arm64-v8a**.
+3. Spune-i terminalului unde e SDK-ul:
+
+   ```bash
+   echo 'export ANDROID_HOME=$HOME/Library/Android/sdk' >> ~/.zshrc
+   echo 'export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools' >> ~/.zshrc
+   source ~/.zshrc
+   adb --version   # verificare
+   ```
+
+Apoi:
+
+```bash
+npx expo run:android   # pornește emulatorul, construiește și instalează aplicația
+```
+
+Cu `npx expo start` deja pornit, tasta `a` deschide aplicația pe Android.
+
+### Development build prin EAS (instalare prin cod QR)
+
+Aplicația se construiește pe serverele Expo; scanezi codul QR de pe Android și se instalează ca o aplicație normală, cu iconul și splash-ul Readar, apoi se conectează la serverul tău de development.
+
+**Pe scurt.** Proiectul e deja configurat: `eas.json` există, `expo-dev-client` e instalat, iar proiectul e legat de contul `paolabogatu` (`projectId` în `app.json`). Rămân trei pași:
+
+1. `eas build --profile development --platform android`: build-ul în cloud. Urmărești progresul și pe **expo.dev → readar-app → Builds**.
+2. Pe telefonul Android: scanezi codul QR de la final și instalezi APK-ul.
+3. `npx expo start`: deschizi Readar pe telefon și scanezi codul QR din terminal (același Wi-Fi, sau `--tunnel`).
+
+Pașii de mai jos sunt varianta detaliată, inclusiv configurarea de la zero.
+
+Profilurile de build sunt în `eas.json`:
+
+| Profil | Ce face |
+| --- | --- |
+| `development` | aplicația de dezvoltare (modificări live), APK |
+| `preview` | aplicația de test, fără server, APK |
+| `production` | pentru Google Play și App Store |
+
+O singură dată:
+
+```bash
+npm install
+npm install -g eas-cli
+eas login     # contul tău Expo
+eas init      # leagă proiectul de cont (adaugă projectId în app.json)
+```
+
+Build-ul:
+
+```bash
+eas build --profile development --platform android
+```
+
+Durează 10–20 de minute; progresul se vede și pe **expo.dev → readar-app → Builds**, unde găsești oricând linkul de instalare. La prima rulare, răspunde **Yes** când întreabă de cheia de semnare Android. La final apar un cod QR și un link.
+
+#### Întrebări din terminal și ce răspunzi
+
+| Întrebare | Când apare | Răspuns |
+| --- | --- | --- |
+| `You are already logged in as paolabogatu. Do you want to continue?` | `eas login` | **Yes** (dacă e contul tău) |
+| `Would you like to create a project for @paolabogatu/readar-app?` | `eas init` | **Y**: creează proiectul în contul tău Expo (privat, gratuit) și adaugă `projectId` în `app.json` |
+| `Generate a new Android Keystore?` | primul `eas build` pentru Android | **Yes**: cheia de semnare a aplicației, păstrată de Expo |
+| Întrebări despre `applicationId` / numele pachetului Android | primul `eas build` | acceptă valoarea propusă (`com.paolabogatu.readarapp`, din `app.json`) |
+
+Cheia de semnare Android e legată de aplicație pentru totdeauna: cu ea se publică toate update-urile în Google Play, așa că las-o la Expo și nu o regenera.
+
+Pe telefonul Android:
+
+1. Scanezi codul QR cu camera (sau deschizi linkul).
+2. Descarci și instalezi APK-ul; dacă cere, permite „instalare din surse necunoscute”.
+3. Deschizi **Readar**.
+
+Pentru modificările live:
+
+```bash
+npx expo start            # același Wi-Fi
+npx expo start --tunnel   # din altă rețea
+```
+
+și scanezi codul QR din aplicația Readar de pe telefon.
+
+**De știut:**
+
+- Un build nou e nevoie doar când adaugi pachete native noi; codul, stilurile și ecranele noi se văd live.
+- După ce adaugi pachete native, rulează din nou `npx expo run:ios` pentru simulatorul iOS.
+- Un development build pentru iPhone prin EAS cere cont Apple Developer (99 $ / an).
+- Expo Go merge doar cu același cont Expo în terminal și în aplicație, deci nu e potrivit pentru a arăta aplicația altcuiva; pentru asta folosește build-ul `preview`.
+
 ## Splash screen
 
 Splash-ul animat e în `src/components/readar-splash.tsx` și repetă preloader-ul de pe readar-site: fundal indigo, petalele care se rotesc și apar pe rând, colțul de pagină care se îndoaie, „Readar”, リーダー și bara „Se pregătește raftul tău”. Se afișează din `src/app/_layout.tsx`, după ce se încarcă fonturile.

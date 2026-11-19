@@ -5,19 +5,18 @@ import {
   EBGaramond_400Regular_Italic,
   EBGaramond_600SemiBold,
 } from '@expo-google-fonts/eb-garamond';
-import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { NotoSerifJP_500Medium } from '@expo-google-fonts/noto-serif-jp';
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 
-import AppTabs from '@/components/app-tabs';
 import { ReadarSplash } from '@/components/readar-splash';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function TabLayout() {
+export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   // Fonturile Readar, încărcate o singură dată pentru toată aplicația
@@ -25,6 +24,7 @@ export default function TabLayout() {
     EBGaramond_400Regular,
     EBGaramond_400Regular_Italic,
     EBGaramond_600SemiBold,
+    Inter_300Light,
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
@@ -36,7 +36,12 @@ export default function TabLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AppTabs />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="components" />
+        <Stack.Screen name="onboarding" />
+      </Stack>
       <ReadarSplash />
     </ThemeProvider>
   );

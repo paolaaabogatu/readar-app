@@ -25,6 +25,7 @@ module.exports = {
         'display-italic': ['EBGaramond_400Regular_Italic'],
         'display-semibold': ['EBGaramond_600SemiBold'],
         // Text și interfață: Acumin Pro -> Inter
+        'sans-light': ['Inter_300Light'],
         sans: ['Inter_400Regular'],
         'sans-medium': ['Inter_500Medium'],
         'sans-semibold': ['Inter_600SemiBold'],
@@ -37,9 +38,11 @@ module.exports = {
         'body-lg': ['17px', { lineHeight: '27.2px' }],
         caption: ['13px', { lineHeight: '18.85px' }],
         label: ['12px', { lineHeight: '15.6px', letterSpacing: '1.92px' }],
-        h3: ['28px', { lineHeight: '33.6px' }],
-        h2: ['44px', { lineHeight: '44px' }],
-        h1: ['56px', { lineHeight: '62.7px' }],
+        helper: ['14px', { lineHeight: '25.9px', letterSpacing: '0.28px' }],
+        // Titluri pentru ecranele aplicației (Auth / Onboarding din Figma)
+        h3: ['24px', { lineHeight: '30px' }],
+        h2: ['32px', { lineHeight: '37.8px' }],
+        h1: ['40px', { lineHeight: '45px' }],
       },
       borderRadius: {
         card: '28px',
