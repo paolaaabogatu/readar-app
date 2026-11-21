@@ -26,6 +26,8 @@ type Props = {
   primary: Pick<ButtonProps, 'label' | 'onPress' | 'disabled' | 'loading'>;
   /** Acțiunea secundară de sub buton, opțional. */
   secondary?: { label: string; onPress: () => void };
+  /** Conținut sub acțiunea secundară (de exemplu adresa site-ului). */
+  footer?: ReactNode;
 };
 
 /**
@@ -44,6 +46,7 @@ export function OnboardingScreen({
   bleed = false,
   primary,
   secondary,
+  footer,
 }: Props) {
   const insets = useSafeAreaInsets();
 
@@ -73,6 +76,7 @@ export function OnboardingScreen({
         <View className="h-11 justify-center">
           {secondary && <SecondaryLink label={secondary.label} onPress={secondary.onPress} />}
         </View>
+        {footer}
       </View>
     </KeyboardAvoidingView>
   );

@@ -1,33 +1,25 @@
-import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ReadarMark, Tagline } from '@/components/brand';
+import { Divider, H1, Jp, Paragraph, Pill, Screen } from '@/components/ui';
 
-import { ReadarMark } from '@/components/readar/readar-mark';
-import { Text } from '@/components/ui/text';
-
+/** Home: ecranul de după onboarding (deocamdată „În curând”). */
 export function HomePage() {
-  const insets = useSafeAreaInsets();
-
   return (
-    <View
-      className="flex-1 items-center justify-center bg-paper px-8"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <Screen center className="px-8">
       <ReadarMark size={88} />
 
-      <Text className="mt-6 font-display-semibold text-h1 text-ink">Readar</Text>
-      <Text className="mt-2 font-jp text-body tracking-[6px] text-kinako">リーダー</Text>
+      <H1 className="mt-6 font-display-semibold">Readar</H1>
+      <Jp size="md" tone="kinako" className="mt-2">
+        リーダー
+      </Jp>
 
-      <View className="my-8 h-px w-10 bg-sakura" />
+      <Divider tone="accent" width={40} className="my-8" />
 
-      <Text className="text-center font-display-italic text-h3 text-momiji">
-        Citește. Respiră. Înflorește.
-      </Text>
-      <Text className="mt-4 max-w-[280px] text-center text-ink-muted">
+      <Tagline className="text-center" />
+      <Paragraph tone="muted" className="mt-4 max-w-[280px] text-center">
         Află titlul și autorul unei cărți dintr-o fotografie.
-      </Text>
+      </Paragraph>
 
-      <View className="mt-10 rounded-full border border-line bg-paper-raised px-5 py-3">
-        <Text className="font-sans-semibold text-label uppercase text-ink">În curând</Text>
-      </View>
-    </View>
+      <Pill label="În curând" className="mt-10" />
+    </Screen>
   );
 }

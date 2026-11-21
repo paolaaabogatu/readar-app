@@ -5,6 +5,7 @@ export type SignInMethod = 'email' | 'apple' | 'google';
 type OnboardingState = {
   name: string;
   method: SignInMethod;
+  email: string;
   genres: string[];
 };
 
@@ -16,7 +17,7 @@ const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 
 /** Ține minte ce alege utilizatorul pe parcursul onboarding-ului (nume, metodă, genuri). */
 export function OnboardingProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<OnboardingState>({ name: '', method: 'email', genres: [] });
+  const [state, setState] = useState<OnboardingState>({ name: '', method: 'email', email: '', genres: [] });
 
   return (
     <OnboardingContext.Provider value={{ ...state, update: (patch) => setState((s) => ({ ...s, ...patch })) }}>

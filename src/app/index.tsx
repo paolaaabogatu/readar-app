@@ -1,3 +1,3 @@
-import { AuthWelcomePage } from '@/pages/auth';
+import { HelloPage } from '@/pages/auth';
 
-export default AuthWelcomePage;
+export default HelloPage;

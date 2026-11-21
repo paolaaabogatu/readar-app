@@ -1,14 +1,14 @@
-import { router, type Href } from 'expo-router';
+import { router } from 'expo-router';
 
 import { OnboardingScreen } from '@/components/onboarding';
 import { TextField } from '@/components/ui';
 import { useOnboarding } from '@/context/onboarding-context';
 
-export function NamePage() {
+export function WhatsYourNamePage() {
   const { name, update } = useOnboarding();
   const valid = name.trim().length > 0;
 
-  const next = () => router.push('/onboarding/method' as Href);
+  const next = () => router.push('/onboarding/how-to-sign-in');
 
   return (
     <OnboardingScreen

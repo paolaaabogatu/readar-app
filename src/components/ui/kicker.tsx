@@ -1,9 +1,12 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+
+import { Jp } from './jp';
+import { Label } from './label';
 
 type Props = {
   /** Eticheta, afișată cu majuscule rare. */
   label: string;
-  /** Cuvântul japonez dinainte, opțional (de exemplu ようこそ). */
+  /** Cuvântul japonez dinainte, în kana (de exemplu ようこそ). Opțional. */
   jp?: string;
   className?: string;
 };
@@ -14,11 +17,11 @@ export function Kicker({ label, jp, className }: Props) {
     <View className={`flex-row items-center gap-3 ${className ?? ''}`}>
       {jp && (
         <>
-          <Text className="font-jp text-[11px] tracking-[2.64px] text-kinako-ink">{jp}</Text>
+          <Jp>{jp}</Jp>
           <View className="h-px w-4 bg-kinako" />
         </>
       )}
-      <Text className="font-sans-medium text-[10px] uppercase tracking-[2.4px] text-kinako-ink">{label}</Text>
+      <Label tone="kinako">{label}</Label>
     </View>
   );
 }

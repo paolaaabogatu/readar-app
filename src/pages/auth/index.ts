@@ -1,1 +1,2 @@
-export { AuthWelcomePage } from './welcome-page';
+export { HelloPage } from './hello-page';
+export { WelcomeBackPage } from './welcome-back-page';

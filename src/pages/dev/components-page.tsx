@@ -1,33 +1,38 @@
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
-import { ChoiceRow, ProgressLine, StepCounter, TopBar } from '@/components/onboarding';
-import { Button, ChecklistItem, ChipGroup, Divider, H1, H3, Paragraph, TextField } from '@/components/ui';
+import { ChoiceList, ProgressLine, StepCounter, TopBar } from '@/components/onboarding';
+import {
+  Button,
+  Card,
+  ChecklistItem,
+  ChipGroup,
+  Divider,
+  H1,
+  Jp,
+  Label,
+  Paragraph,
+  Pill,
+  Screen,
+  TextField,
+  TextLink,
+} from '@/components/ui';
 
 function Row({ title, children, dark = false }: { title: string; children: React.ReactNode; dark?: boolean }) {
   return (
-    <View className={`mt-8 gap-3 rounded-card p-5 ${dark ? 'bg-indigo' : 'bg-paper-raised'}`}>
-      <H3 tone={dark ? 'on-brand' : 'ink'}>{title}</H3>
+    <Card title={title} tone={dark ? 'dark' : 'light'} className="mt-8">
       {children}
-    </View>
+    </Card>
   );
 }
 
 /** Catalogul componentelor: toate variantele și stările, ca în Design System din Figma. */
 export function ComponentsPage() {
-  const insets = useSafeAreaInsets();
-  const [choice, setChoice] = useState(1);
+  const [method, setMethod] = useState<'email' | 'apple' | 'google'>('email');
   const [genres, setGenres] = useState(['Aventuri', 'Animale']);
 
   return (
-    <View className="flex-1 bg-paper" style={{ paddingTop: insets.top }}>
-
-      <TopBar />
-
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 48, paddingHorizontal: 24 }}>
+    <Screen scroll header={<TopBar />} className="pt-4">
       <H1>Componente</H1>
       <Paragraph tone="muted" className="mt-2">
         Button — variantă × stare. Apasă și ține apăsat ca să vezi starea apăsată.
@@ -94,11 +99,15 @@ export function ComponentsPage() {
       </Row>
 
       <Row title="Alegere (radio)">
-        <View>
-          <ChoiceRow index={1} first title="Cu emailul" subtitle="Îți alegi o parolă" icon="mail-outline" selected={choice === 1} onPress={() => setChoice(1)} />
-          <ChoiceRow index={2} title="Cu Apple" icon="logo-apple" selected={choice === 2} onPress={() => setChoice(2)} />
-          <ChoiceRow index={3} title="Cu Google" icon="logo-google" selected={choice === 3} onPress={() => setChoice(3)} />
-        </View>
+        <ChoiceList
+          options={[
+            { id: 'email', title: 'Cu emailul', subtitle: 'Îți alegi o parolă', icon: 'mail-outline' },
+            { id: 'apple', title: 'Cu Apple', icon: 'logo-apple' },
+            { id: 'google', title: 'Cu Google', icon: 'logo-google' },
+          ]}
+          value={method}
+          onChange={setMethod}
+        />
       </Row>
 
       <Row title="Chips">
@@ -108,7 +117,17 @@ export function ComponentsPage() {
           onChange={setGenres}
         />
       </Row>
-      </ScrollView>
-    </View>
+
+      <Row title="Text mic">
+        <Label>Etichetă (sm)</Label>
+        <Label size="xs">readar.app (xs)</Label>
+        <Jp>ようこそ</Jp>
+        <Paragraph>
+          Nu ai cont? <TextLink>Creează unul</TextLink>
+        </Paragraph>
+        <Pill label="În curând" />
+        <Divider tone="accent" width={40} />
+      </Row>
+    </Screen>
   );
 }

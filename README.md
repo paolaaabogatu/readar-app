@@ -232,20 +232,41 @@ Durează 10–20 de minute; progresul se vede și pe **expo.dev → readar-app �
 
 Cheia de semnare Android e legată de aplicație pentru totdeauna: cu ea se publică toate update-urile în Google Play, așa că las-o la Expo și nu o regenera.
 
+#### Pornire după build (APK)
+
+**1. Instalezi APK-ul** (o singură dată după fiecare build nou)
+
 Pe telefonul Android:
 
-1. Scanezi codul QR cu camera (sau deschizi linkul).
-2. Descarci și instalezi APK-ul; dacă cere, permite „instalare din surse necunoscute”.
-3. Deschizi **Readar**.
+1. Scanezi codul QR de la finalul build-ului cu camera, sau deschizi linkul (îl găsești oricând pe **expo.dev → readar-app → Builds**, butonul **Install**).
+2. Descarci APK-ul și îl instalezi; dacă cere, permite „instalare din surse necunoscute”.
+3. Apare aplicația **Readar** pe telefon.
 
-Pentru modificările live:
+Pe emulatorul Android de pe Mac:
 
 ```bash
-npx expo start            # același Wi-Fi
-npx expo start --tunnel   # din altă rețea
+eas build:run --platform android --latest   # descarcă ultimul build și îl instalează în emulator
 ```
 
-și scanezi codul QR din aplicația Readar de pe telefon.
+sau trage fișierul `.apk` peste fereastra emulatorului, sau `adb install cale/catre/readar.apk`.
+
+**2. Pornești serverul de development** (de fiecare dată când lucrezi)
+
+```bash
+npx expo start            # telefonul și Mac-ul pe același Wi-Fi
+npx expo start --tunnel   # telefonul în altă rețea
+```
+
+În terminal scrie „Using development build”; dacă scrie „Using Expo Go”, apasă `s`.
+
+**3. Deschizi aplicația și te conectezi**
+
+- Pe telefon: deschizi **Readar** și scanezi codul QR din terminal (din ecranul aplicației, butonul de scanare), sau alegi serverul din listă, dacă apare.
+- Pe emulator: cu aplicația instalată, apeși `a` în terminal.
+
+De aici, orice modificare în cod apare imediat pe telefon. Scutură telefonul (sau `m` în terminal) pentru meniul de dezvoltare: Reload, debugger.
+
+**Pentru build-ul `preview`** (cel trimis altora) nu e nevoie de `npx expo start`: instalezi APK-ul și deschizi aplicația, merge singură.
 
 **De știut:**
 

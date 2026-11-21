@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { forwardRef, useState, type ComponentRef } from 'react';
 import { Pressable, Text, TextInput, View, type TextInputProps } from 'react-native';
 
+import { Label } from './label';
+
 export type TextFieldProps = TextInputProps & {
   /** Eticheta de deasupra, afișată cu majuscule mici („EMAILUL TĂU”). */
   label: string;
@@ -30,9 +32,7 @@ export const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldPro
 
   return (
     <View className={`${editable ? '' : 'opacity-40'} ${className ?? ''}`}>
-      <Text className={`font-sans-medium text-[10px] uppercase tracking-[2px] ${error ? 'text-momiji-ink' : 'text-ink-muted'}`}>
-        {label}
-      </Text>
+      <Label className={error ? 'text-momiji-ink' : ''}>{label}</Label>
 
       <View className="mt-2 flex-row items-center">
         <TextInput
